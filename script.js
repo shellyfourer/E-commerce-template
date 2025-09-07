@@ -17,3 +17,26 @@ fetch('/products.json')
         });
     })
     .catch(error => console.error("Error loading products:", error));
+
+//Fetch and display product details based on the product ID in the URL
+if (window.location.pathname.endsWith('product.html')) {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    fetch('/products.json')
+        .then(response => response.json())
+        .then(products => {
+            const product = products.find(p => p.id == productId);
+            if (product) {
+                document.querySelector('main').innerHTML = `
+                    <img src="/assets/placeholder.svg" alt="Product Image">
+                    <h1>${product.name}</h1>
+                    <p>Price: $${product.price}</p>
+                    <p>${product.description || ''}</p>
+                    <button class="btn">Add to cart</button>
+                `;
+            } else {
+                document.querySelector('main').textContent = 'Product not found.';
+            }
+        });
+}
